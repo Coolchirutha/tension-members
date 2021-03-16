@@ -32,10 +32,10 @@
   max-width: 860px;
   margin: 0 auto;
   margin-top: 3%;
-  border: 5px solid red;
 }
 
-.left , .right {
+.left,
+.right {
   box-sizing: border-box;
 }
 

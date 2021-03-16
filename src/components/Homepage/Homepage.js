@@ -5,6 +5,7 @@ import classes from "./Homepage.module.css";
 
 // Image Imports
 import SingleBolted from "../../images/single_angle_section_with_bolted_connections.png";
+import SingleWelded from "../../images/single_angle_section_with_welded_connections.png";
 import TwoSame from "../../images/two_angle_sections_placed_back_to_back_on_same_side_of_gusset_plate.png";
 import TwoOpposite from "../../images/two_angle_sections_placed_back_to_back_on_opposite_sides_of_gusset_plate.png";
 
@@ -24,8 +25,8 @@ class Homepage extends Component {
               className={classes.left}
             ></MemberCard>
             <MemberCard
-              image={SingleBolted}
-              altText="Single Angle Section with Bolted Connections"
+              image={SingleWelded}
+              altText="Single Angle Section with Welded Connections"
               className={classes.right}
             ></MemberCard>
             <MemberCard

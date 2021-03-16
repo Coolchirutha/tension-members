@@ -13,6 +13,7 @@ export default class MemberCard extends Component {
         <img
           src={this.props.image}
           alt={this.props.altText}
+          className={classes.memberImage}
         />
       </div>
     );

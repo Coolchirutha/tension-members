@@ -1,3 +1,10 @@
 .container {
-  margin: 2%;
+  padding: 2%;
+  margin: 0.5%;
+  background-image: linear-gradient(to bottom left, #e4fbff, #ccf2f4);
+}
+
+.memberImage{
+  height: 100%;
+  width: 100%;
 }
