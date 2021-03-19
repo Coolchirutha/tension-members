@@ -1,5 +1,4 @@
 .container {
-  height: 100%;
   text-align: center;
   background-image: linear-gradient(to bottom right, #89f7fe, #66a6ff);
 }
@@ -19,6 +18,10 @@
   font-weight: bold;
 }
 
+.subHeader {
+  margin-bottom: 3%;
+}
+
 .cardList {
   display: -webkit-flexbox;
   display: -ms-flexbox;
@@ -34,7 +37,6 @@
   text-align: center;
   max-width: 860px;
   margin: 0 auto;
-  margin-top: 3%;
 }
 
 .left,

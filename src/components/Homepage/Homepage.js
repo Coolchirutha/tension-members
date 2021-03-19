@@ -50,6 +50,13 @@ class Homepage extends Component {
               currentSelected={this.state.currentSelected}
               updateSelected={this.updateSelected}
             ></MemberCard>
+          </div>
+          {this.state.currentSelected !== 0 ? (
+            <div className={classnames(classes.panel, classes.pink)}>
+              <button>Give input Values</button>
+            </div>
+          ) : null}
+          <div className={classes.cardList}>
             <MemberCard
               id={3}
               altText="Two Angle Sections placed back to back on same side of Gusset Plate"
@@ -67,7 +74,7 @@ class Homepage extends Component {
               updateSelected={this.updateSelected}
             ></MemberCard>
             <MemberCard
-              id={4}
+              id={5}
               image={TwoOppositeWelded}
               altText="Two Angle Sections placed back to back on opposite side of Gusset Plate with Welded Connection"
               className={classes.right}
@@ -75,11 +82,6 @@ class Homepage extends Component {
               updateSelected={this.updateSelected}
             ></MemberCard>
           </div>
-          {this.state.currentSelected !== 0 ? (
-            <div className={classnames(classes.panel,classes.pink)}>
-              <button>Give input Values</button>
-            </div>
-          ) : null}
         </div>
       </div>
     );
