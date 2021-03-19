@@ -9,6 +9,7 @@ import SingleBolted from "../../images/single_angle_section_with_bolted_connecti
 import SingleWelded from "../../images/single_angle_section_with_welded_connections.png";
 import TwoSame from "../../images/two_angle_sections_placed_back_to_back_on_same_side_of_gusset_plate.png";
 import TwoOpposite from "../../images/two_angle_sections_placed_back_to_back_on_opposite_sides_of_gusset_plate.png";
+import TwoOppositeWelded from "../../images/two_angle_sections_placed_back_to_back_on_opposite_side_of_gusset_plate_welded.png";
 
 class Homepage extends Component {
   constructor(props) {
@@ -27,7 +28,7 @@ class Homepage extends Component {
   render() {
     return (
       <div className={classes.container}>
-        <div className={classes.header}>Design of Tension Members</div>
+        <div className={classes.header}>Design of Tension Members (Angles)</div>
         <div className={classes.content}>
           <div className={classes.subheader}>
             Choose the type of member you want to design
@@ -61,6 +62,14 @@ class Homepage extends Component {
               id={4}
               image={TwoOpposite}
               altText="Two Angle Sections placed back to back on opposite side of Gusset Plate"
+              className={classes.right}
+              currentSelected={this.state.currentSelected}
+              updateSelected={this.updateSelected}
+            ></MemberCard>
+            <MemberCard
+              id={4}
+              image={TwoOppositeWelded}
+              altText="Two Angle Sections placed back to back on opposite side of Gusset Plate with Welded Connection"
               className={classes.right}
               currentSelected={this.state.currentSelected}
               updateSelected={this.updateSelected}

@@ -8,12 +8,13 @@ export default class MemberCard extends Component {
     super();
     this.state = {
       isSelected: false,
-      classes: [classes.container],
+      containerClasses: [classes.container],
+      captionClasses: [classes.caption],
     };
   }
 
   handleClick = () => {
-    this.state.classes.push(classes.selectedContainer);
+    this.state.containerClasses.push(classes.selectedContainer);
     this.props.updateSelected(this.props.id);
     this.setState({
       isSelected: true,
@@ -22,7 +23,7 @@ export default class MemberCard extends Component {
 
   componentDidUpdate() {
     if (this.state.isSelected && this.props.currentSelected !== this.props.id) {
-      this.state.classes.pop();
+      this.state.containerClasses.pop();
       this.setState({
         isSelected: false,
       });
@@ -43,11 +44,14 @@ export default class MemberCard extends Component {
           className={classes.memberImage}
           onClick={() => this.handleClick()}
         />
-        {this.state.isSelected ? (
-          <p className={classes.caption}>
-            {this.props.altText}
-          </p>
-        ) : null}
+        <p
+          className={classnames(
+            classes.caption,
+            this.state.isSelected ? classes.captionIn : classes.captionOut
+          )}
+        >
+          {this.props.altText}
+        </p>
       </div>
     );
   }

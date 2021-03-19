@@ -3,12 +3,23 @@
   word-wrap: normal;
   margin: 0;
   font-size: small;
+  transition: all 0.3s ease-out;
+  opacity: 0;
+}
+
+.captionIn {
+  animation: captionIn 1.6s ease-out forwards;
+}
+
+.captionOut {
+  animation: captionOut 1.6s ease-out forwards;
 }
 
 .container {
   padding: 2%;
   margin: 1%;
   border-radius: 5%;
+  height: 100%;
 }
 
 .memberImage {
@@ -19,4 +30,16 @@
 .selectedContainer {
   background-image: linear-gradient(to top left, #e4fbff, #e4fbff);
   transform: scale(0.9);
+}
+
+@keyframes captionIn {
+  100%{
+      opacity: 1;
+  }
+}
+
+@keyframes captionOut {
+  100%{
+      opacity: 0;
+  }
 }
