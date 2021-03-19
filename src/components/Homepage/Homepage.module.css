@@ -1,3 +1,6 @@
+* {
+  box-sizing: border-box;
+}
 .container {
   height: 100%;
   text-align: center;
@@ -8,6 +11,9 @@
   font-size: xx-large;
   font-weight: bolder;
   padding-top: 2%;
+  padding-bottom: 2%;
+  background-color: green;
+  background-image: linear-gradient(to top left, #304197, #3d5af1);
 }
 
 .content {
@@ -37,6 +43,88 @@
 .left,
 .right {
   box-sizing: border-box;
+}
+
+/* Go Button Styling */
+
+button {
+  color: #454545;
+  background: transparent;
+  border-width: 2px;
+  border-style: solid;
+  border-color: #454545;
+  position: relative;
+  margin: 1em;
+  display: inline-block;
+  padding: 0.5em 1em;
+  transition: all 0.3s ease-in-out;
+  text-align: center;
+  font-family: comfortaa;
+  font-weight: bold;
+}
+button:before,
+button:after {
+  content: "";
+  display: block;
+  position: absolute;
+  border-color: #454545;
+  box-sizing: border-box;
+  border-style: solid;
+  width: 1.5em;
+  height: 1.5em;
+  transition: all 0.3s ease-in-out;
+}
+button:before {
+  top: -6px;
+  left: -6px;
+  border-width: 2px 0 0 2px;
+  z-index: 5;
+}
+button:after {
+  bottom: -6px;
+  right: -6px;
+  border-width: 0 2px 2px 0;
+}
+button:hover:before,
+button:hover:after {
+  width: calc(100% + 12px);
+  height: calc(100% + 12px);
+  border-color: #fff;
+}
+button:hover {
+  color: #353535;
+  background-color: #fff;
+  border-color: #fff;
+}
+.panel {
+  max-width: 960px;
+  text-align: center;
+  position: relative;
+  margin: auto;
+}
+
+.pink button {
+  color: #eb1777;
+  border-color: #eb1777;
+}
+.pink button:before,
+.pink button:after {
+  border-color: #eb1777;
+}
+.pink button:hover:before,
+.pink button:hover:after {
+  border-color: #eb1777;
+}
+.pink button:hover {
+  color: #fff;
+  background-color: #eb1777;
+  border-color: #eb1777;
+}
+.pink .panel {
+  max-width: 960px;
+  text-align: center;
+  position: relative;
+  margin: auto;
 }
 
 @media all and (min-width: 860px) {
