@@ -43,6 +43,11 @@ export default class MemberCard extends Component {
           className={classes.memberImage}
           onClick={() => this.handleClick()}
         />
+        {this.state.isSelected ? (
+          <p className={classes.caption}>
+            {this.props.altText}
+          </p>
+        ) : null}
       </div>
     );
   }

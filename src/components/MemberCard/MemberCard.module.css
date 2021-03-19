@@ -1,15 +1,22 @@
+.caption {
+  max-width: fit-content;
+  word-wrap: normal;
+  margin: 0;
+  font-size: small;
+}
+
 .container {
   padding: 2%;
   margin: 1%;
   border-radius: 5%;
 }
 
+.memberImage {
+  height: 100%;
+  width: 100%;
+}
+
 .selectedContainer {
   background-image: linear-gradient(to top left, #e4fbff, #e4fbff);
   transform: scale(0.9);
-}
-
-.memberImage{
-  height: 100%;
-  width: 100%;
 }
