@@ -1,0 +1,51 @@
+.container {
+  min-width: 100vh;
+  min-height: 100vh;
+  background-image: linear-gradient(to bottom right, #89f7fe, #66a6ff);
+  text-align: center;
+  margin: 0 auto;
+  font-size: smaller;
+}
+
+.header {
+  padding-top: 2%;
+  margin-bottom: 2%;
+  font-size: 2em;
+  font-weight: bolder;
+}
+
+.inputForm {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.left,
+.right {
+  min-width: 30%;
+  background-color: #a7ff83;
+  padding: 0.5%;
+}
+
+.left {
+  margin-right: 2%;
+}
+
+.right {
+  margin-left: 2%;
+}
+
+.formGroup {
+  padding: 2%;
+  text-align: right;
+}
+
+.inputLabel, .radioInputLabel {
+  display: inline-block;
+  text-align: right;
+  margin-right: 5px;
+}
+
+.radioInputLabel {
+  text-align: left;
+}
