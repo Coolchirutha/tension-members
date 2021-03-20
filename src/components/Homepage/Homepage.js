@@ -25,6 +25,10 @@ class Homepage extends Component {
     });
   };
 
+  handleSubmit = () => {
+    this.props.history.push("/WeldInput");
+  };
+
   render() {
     return (
       <div className={classes.container}>
@@ -53,7 +57,7 @@ class Homepage extends Component {
           </div>
           {this.state.currentSelected !== 0 ? (
             <div className={classnames(classes.panel, classes.pink)}>
-              <button>Give input Values</button>
+              <button onClick={this.handleSubmit}>Give input Values</button>
             </div>
           ) : null}
           <div className={classes.cardList}>

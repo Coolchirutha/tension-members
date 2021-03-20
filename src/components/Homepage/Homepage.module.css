@@ -61,6 +61,7 @@ button {
   text-align: center;
   font-family: comfortaa;
   font-weight: bold;
+  font-size: large;
 }
 button:before,
 button:after {

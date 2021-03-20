@@ -23,8 +23,9 @@
 .left,
 .right {
   min-width: 30%;
-  background-color: #a7ff83;
-  padding: 0.5%;
+  background-color: #a6ff83d2;
+  padding: 1%;
+  border-radius: 1%;
 }
 
 .left {
@@ -35,9 +36,21 @@
   margin-left: 2%;
 }
 
-.formGroup {
+.formGroup, .formGroupLeft, .formGroupRight {
   padding: 2%;
+}
+
+.leftAlign{
+  text-align: left;
+}
+
+.rightAlign{
   text-align: right;
+}
+
+.textInput {
+  width: 100px;
+  height: 25px;
 }
 
 .inputLabel, .radioInputLabel {
@@ -48,4 +61,9 @@
 
 .radioInputLabel {
   text-align: left;
+  align-items: left;
+}
+
+.submitButton{
+  font-stretch: semi-expanded;
 }
