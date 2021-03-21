@@ -13,8 +13,7 @@ class WeldInput extends Component {
       allowableSlendernessRatio: 0,
       gussetPlateThickness: 0,
       throatThickness: 0,
-      weldLengthDistribution: "On the two sides parallel to axis of the load",
-      typeOfWelding: "Shop Welding",
+      weldTypeDropdown: "Custom Safety Factor",
       customSafetyFactor: 0,
       isFe410: false,
       ultimateTensileStress: 0,
@@ -23,7 +22,6 @@ class WeldInput extends Component {
       ym1: 0,
       ym0: 0,
       typeOfSection: "Equal",
-      connectedTo: "Equal",
       sectionTypeDropdown: "Connected leg larger",
     };
   }
@@ -129,77 +127,24 @@ class WeldInput extends Component {
                 />
               </div>
               <fieldset>
-                <legend>Distribution of Weld Length</legend>
-                <div
-                  className={classnames(classes.formGroup, classes.leftAlign)}
-                >
-                  <label className={classes.radioInputLabel}>
-                    <input
-                      type="radio"
-                      name="weldLengthDistribution"
-                      value="On the two sides parallel to axis of the load"
-                      checked={
-                        this.state.weldLengthDistribution ===
-                        "On the two sides parallel to axis of the load"
-                      }
-                      onChange={this.updateInputValue}
-                    />
-                    On the two sides parallel to axis of the load
-                  </label>
-                  <br />
-                  <label className={classes.radioInputLabel}>
-                    <input
-                      type="radio"
-                      name="weldLengthDistribution"
-                      value="On three sides (one side perpendicular to load)"
-                      checked={
-                        this.state.weldLengthDistribution ===
-                        "On three sides (one side perpendicular to load)"
-                      }
-                      onChange={this.updateInputValue}
-                    />
-                    On three sides (one side perpendicular to load)
-                  </label>
-                </div>
-              </fieldset>
-              <fieldset>
                 <legend>Partial Safety Factor</legend>
+                <div className={(classes.formGroup, classes.leftAlign)}>
+                  <select
+                    className={classes.weldTypeDropdown}
+                    name="weldTypeDropdown"
+                    value={this.state.weldTypeDropdown}
+                    onChange={this.updateInputValue}
+                  >
+                    <option value="Custom Safety Factor">
+                      Custom Safety Factor
+                    </option>
+                    <option value="Shop Welding">Shop Welding</option>
+                    <option value="Site Welding">Site Welding</option>
+                  </select>
+                </div>
                 <div
-                  className={classnames(classes.formGroup, classes.leftAlign)}
+                  className={classnames(classes.formGroup, classes.rightAlign)}
                 >
-                  <label
-                    className={classnames(
-                      classes.radioInputLabel,
-                      classes.alignLeft
-                    )}
-                  >
-                    <input
-                      type="radio"
-                      className={classes.radioInputFull}
-                      name="typeOfWelding"
-                      value="Shop Welding"
-                      checked={this.state.typeOfWelding === "Shop Welding"}
-                      onChange={this.updateInputValue}
-                    />
-                    Shop Welding
-                  </label>
-                  <label
-                    className={classnames(
-                      classes.radioInputLabel,
-                      classes.alignRight
-                    )}
-                  >
-                    <input
-                      type="radio"
-                      className={classes.radioInputFull}
-                      name="typeOfWelding"
-                      value="Site Welding"
-                      checked={this.state.typeOfWelding === "Site Welding"}
-                      onChange={this.updateInputValue}
-                    />
-                    Site Welding
-                  </label>
-                  <br />
                   <label className={classes.inputLabel}>
                     Custom Safety Factor:
                   </label>
@@ -207,13 +152,17 @@ class WeldInput extends Component {
                     className={classes.textInput}
                     name="customSafetyFactor"
                     value={
-                      this.state.typeOfWelding === "Shop Welding"
+                      this.state.weldTypeDropdown === "Custom Safety Factor"
+                        ? this.state.customSafetyFactor
+                        : this.state.weldTypeDropdown === "Shop Welding"
                         ? 1.25
-                        : this.state.customSafetyFactor
+                        : 1.5
                     }
                     onChange={this.updateInputValue}
                     disabled={
-                      this.state.typeOfWelding === "Site Welding" ? false : true
+                      this.state.weldTypeDropdown === "Custom Safety Factor"
+                        ? false
+                        : true
                     }
                     type="text"
                   />

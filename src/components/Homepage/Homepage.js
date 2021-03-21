@@ -26,7 +26,25 @@ class Homepage extends Component {
   };
 
   handleSubmit = () => {
-    this.props.history.push("/WeldInput");
+    switch (this.state.currentSelected) {
+      case 1:
+      case 3:
+      case 4:
+        this.props.history.push({
+          pathname: "/BoltInput",
+          state: { id: this.state.currentSelected },
+        });
+        break;
+      case 2:
+      case 5:
+        this.props.history.push({
+          pathname: "/WeldInput",
+          state: { id: this.state.currentSelected },
+        });
+        break;
+      default:
+        console.log("Doesn't work");
+    }
   };
 
   render() {
