@@ -29,12 +29,12 @@ class BoltInput extends Component {
       isPSFactorIS800: false,
       ymb: 0,
       typeOfSection: "Equal",
-      sectionTypeDropdown: "Connected leg larger",
+      sectionTypeDropdown: "Larger leg as connected leg",
     };
   }
 
   determineDH() {
-    const dia = this.state.boltDiameter;
+    const dia = parseFloat(this.state.boltDiameter);
     var dh = 0;
     if (dia < 12) {
       window.alert("Please enter a bolt diameter greater than 12mm");
@@ -59,55 +59,241 @@ class BoltInput extends Component {
 
     // Calculating dh value
     var dh = this.determineDH();
-    if (dh === 143.69) return;
+    if (dh === -143.69) return;
 
     // To be run when Take min. values according to IS800 is clicked
+    var pitch = this.state.pitch;
+    var endDistance = this.state.endDistance;
     if (this.state.isMinIS800) {
       this.setState({
-        pitch: 2.5 * this.state.boltDiameter,
+        pitch: 2.5 * parseFloat(this.state.boltDiameter),
         endDistance: 1.5 * dh,
       });
+      pitch = 2.5 * parseFloat(this.state.boltDiameter);
+      endDistance = 1.5 * dh;
     }
 
     var ag =
-      (this.state.factoredLoad * this.state.ym0 * 100) / this.state.yieldStress;
+      (parseFloat(this.state.factoredLoad) *
+        parseFloat(this.state.ym0) *
+        1000) /
+      parseFloat(this.state.yieldStress);
 
-    if(this.state.typeOfSection === "Equal"){
-      equalAngle.forEach((item) => {
-        if((item.An - ag) >= 0){
-          return item;
+    var suitableMember = {};
+    var nextSuitableMember = {};
+    var suitableMemberIndex = 0;
+
+    if (this.state.typeOfSection === "Equal") {
+      for (let [index, item] of equalAngle.entries()) {
+        if (item.An - ag >= 0) {
+          suitableMember = item;
+          suitableMemberIndex = index;
+          nextSuitableMember = equalAngle[index + 1];
+          break;
         }
-      })
+      }
+    } else if (this.state.typeOfSection === "Unequal") {
+      for (let [index, item] of unequalAngle.entries()) {
+        if (item.An - ag >= 0) {
+          suitableMember = item;
+          suitableMemberIndex = index;
+          nextSuitableMember = equalAngle[index + 1];
+          break;
+        }
+      }
     }
 
-    var ab =
-      ((this.props.location.state.id === 1
-        ? 0.78
-        : this.props.location.state.id === 2
-        ? 1.78
-        : 1.56) *
-        Math.PI *
-        this.state.boltDiameter *
-        this.state.boltDiameter) /
-      4;
+    var [
+      tdn,
+      tdb,
+      tdb1,
+      tdb2,
+      tdg,
+      ab,
+      vdsb,
+      k1,
+      k2,
+      k3,
+      kb,
+      tdpb,
+      vdpb,
+      vd,
+      n,
+      alpha,
+      avg,
+      avn,
+      g,
+      atg,
+      atn,
+    ] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+    do {
+      ab =
+        ((this.props.location.state.id === 1
+          ? 0.78
+          : this.props.location.state.id === 2
+          ? 1.78
+          : 1.56) *
+          Math.PI *
+          parseFloat(this.state.boltDiameter) *
+          parseFloat(this.state.boltDiameter)) /
+        4;
 
-    var vdsb =
-      (this.state.boltUltimateTensileStress * ab) /
-      (Math.sqrt(3) * this.state.ymb * 1000);
+      vdsb =
+        (parseFloat(this.state.boltUltimateTensileStress) * ab) /
+        (Math.sqrt(3) * parseFloat(this.state.ymb) * 1000);
 
-    var k1 = this.state.endDistance / (3 * dh);
+      k1 = parseFloat(endDistance) / (3 * dh);
 
-    var k2 = this.state.pitch / (3 * dh) - 0.25;
+      k2 = parseFloat(pitch) / (3 * dh) - 0.25;
 
-    var k3 =
-      this.state.boltUltimateTensileStress /
-      this.state.steelUltimateTensileStress;
+      k3 =
+        parseFloat(this.state.boltUltimateTensileStress) /
+        parseFloat(this.state.steelUltimateTensileStress);
 
-    var kb = Math.min(k1, k2, k3, 1);
+      kb = Math.min(k1, k2, k3, 1);
 
-    // if (t > this.state.gussetPlateThickness)
-    //   tdpb = this.state.gussetPlateThickness;
-    // else tdpb = t;
+      tdpb = Math.min(
+        parseFloat(this.state.gussetPlateThickness),
+        suitableMember.t
+      );
+
+      vdpb =
+        (2.5 *
+          kb *
+          parseFloat(this.state.boltDiameter) *
+          parseFloat(this.state.steelUltimateTensileStress) *
+          tdpb) /
+        parseFloat(this.state.ymb);
+
+      vd = Math.min(vdpb, vdsb);
+      if (
+        this.props.location.state.id === 3 ||
+        this.props.location.state.id === 4
+      )
+        vd *= 2;
+
+      n = Math.ceil(parseFloat(this.state.factoredLoad) / vd);
+
+      alpha = 0;
+      if (n === 1 || n === 2) alpha = 0.6;
+      else if (n === 3) alpha = 0.7;
+      else if (n >= 4) alpha = 0.8;
+
+      avg =
+        (parseFloat(pitch) * (n - 1) + parseFloat(endDistance)) *
+        suitableMember.t;
+
+      avn =
+        (parseFloat(pitch) * (n - 1) +
+          parseFloat(endDistance) -
+          (n + 0.5) * dh) *
+        suitableMember.t;
+
+      g = 0;
+      if (parseFloat(pitch) % 5 === 0) g = parseFloat(pitch);
+
+      if (this.state.typeOfSection === "Equal") {
+        atg = (suitableMember.Size - g) * suitableMember.t;
+        atn = (suitableMember.Size - g - 0.5 * dh) * suitableMember.t;
+      } else if (
+        this.state.typeOfSection === "Unequal" &&
+        this.state.sectionTypeDropdown === "Larger leg as connected leg"
+      ) {
+        atg = (suitableMember.A - g) * suitableMember.t;
+        atn = (suitableMember.A - g - 0.5 * dh) * suitableMember.t;
+      } else if (
+        this.state.typeOfSection === "Unequal" &&
+        this.state.sectionTypeDropdown === "Larger leg as overhanging leg"
+      ) {
+        atg = (suitableMember.B - g) * suitableMember.t;
+        atn = (suitableMember.B - g - 0.5 * dh) * suitableMember.t;
+      }
+
+      tdg =
+        (suitableMember.An * parseFloat(this.state.yieldStress)) /
+        (parseFloat(this.state.ym0) * 1000);
+
+      tdn =
+        (alpha *
+          suitableMember.An *
+          parseFloat(this.state.steelUltimateTensileStress)) /
+        (parseFloat(this.state.ym0) * 1000);
+
+      if (
+        this.props.location.state.id === 3 ||
+        this.props.location.state.id === 4
+      )
+        tdn *= 2;
+
+      tdb1 =
+        (avg * parseFloat(this.state.yieldStress)) /
+          (parseFloat(this.state.ym0) * 1000 * Math.sqrt(3)) +
+        (0.9 * atn * parseFloat(this.state.steelUltimateTensileStress)) /
+          (parseFloat(this.state.ym1) * 1000);
+
+      tdb2 =
+        (0.9 * avn * parseFloat(this.state.steelUltimateTensileStress)) /
+          (parseFloat(this.state.ym1) * 1000 * Math.sqrt(3)) +
+        ((atg * parseFloat(this.state.yieldStress)) /
+          parseFloat(this.state.ym0)) *
+          1000;
+
+      tdb = Math.min(tdb1, tdb2);
+
+      if (
+        this.props.location.state.id === 3 ||
+        this.props.location.state.id === 4
+      )
+        tdb *= 2;
+    } while (
+      Math.max(tdg, tdn, tdb) < parseFloat(this.state.factoredLoad) &&
+      parseFloat(this.state.allowableSlendernessRatio) <
+        parseFloat(this.state.lengthOfTensionMember) / suitableMember.rmin
+    );
+    console.log(
+      parseFloat(this.state.factoredLoad),
+      parseFloat(this.state.lengthOfTensionMember),
+      parseFloat(this.state.allowableSlendernessRatio),
+      parseFloat(this.state.gussetPlateThickness),
+      parseFloat(this.state.steelUltimateTensileStress),
+      parseFloat(this.state.yieldStress),
+      parseFloat(this.state.ym1),
+      parseFloat(this.state.ym0),
+      parseFloat(this.state.boltUltimateTensileStress),
+      parseFloat(this.state.boltDiameter),
+      parseFloat(pitch),
+      parseFloat(endDistance),
+      parseFloat(this.state.ymb)
+    );
+    console.log(
+      tdn,
+      tdb,
+      tdb1,
+      tdb2,
+      tdg,
+      ab,
+      vdsb,
+      k1,
+      k2,
+      k3,
+      kb,
+      tdpb,
+      vdpb,
+      vd,
+      n,
+      alpha,
+      avg,
+      avn,
+      g,
+      ag,
+      atg,
+      atn
+    );
+    console.log(
+      parseFloat(this.state.lengthOfTensionMember) / suitableMember.rmin
+    );
+    console.log(suitableMember.An);
+    console.log(suitableMember.Designation);
   };
 
   updateInputValue = (e) => {
@@ -123,8 +309,6 @@ class BoltInput extends Component {
   };
 
   render() {
-    console.log(equalAngle[0].Designation);
-    console.log(unequalAngle[10].Designation);
     return (
       <div className={classes.container}>
         <div className={classes.header}>Enter the design input parameters</div>
@@ -201,6 +385,12 @@ class BoltInput extends Component {
                     name="isFe410"
                     checked={this.state.isFe410}
                     onChange={this.updateCheckboxValue}
+                    onClick={() => {
+                      this.setState({
+                        steelUltimateTensileStress: 410,
+                        yieldStress: 250,
+                      });
+                    }}
                   />
                   Fe410 steel
                 </label>
@@ -247,9 +437,15 @@ class BoltInput extends Component {
                   <label className={classes.inputLabel}>
                     <input
                       type="checkbox"
-                      name="isIS800"
-                      checked={this.state.isIS800}
+                      name="isPSFactorsIS800"
+                      checked={this.state.isPSFactorsIS800}
                       onChange={this.updateCheckboxValue}
+                      onClick={() => {
+                        this.setState({
+                          ym1: 1.25,
+                          ym0: 1.1,
+                        });
+                      }}
                     />
                     Take according to IS 800 table 5 (cl.5.4.1)
                   </label>
@@ -263,9 +459,9 @@ class BoltInput extends Component {
                   <input
                     className={classes.textInput}
                     name="ym1"
-                    value={this.state.isIS800 ? 1.25 : this.state.ym1}
+                    value={this.state.isPSFactorsIS800 ? 1.25 : this.state.ym1}
                     onChange={this.updateInputValue}
-                    disabled={this.state.isIS800}
+                    disabled={this.state.isPSFactorsIS800}
                     type="text"
                   />
                 </div>
@@ -278,9 +474,9 @@ class BoltInput extends Component {
                   <input
                     className={classes.textInput}
                     name="ym0"
-                    value={this.state.isIS800 ? 1.1 : this.state.ym0}
+                    value={this.state.isPSFactorsIS800 ? 1.1 : this.state.ym0}
                     onChange={this.updateInputValue}
-                    disabled={this.state.isIS800}
+                    disabled={this.state.isPSFactorsIS800}
                     type="text"
                   />
                 </div>
@@ -296,6 +492,18 @@ class BoltInput extends Component {
                   name="boltTypeDropdown"
                   value={this.state.boltTypeDropdown}
                   onChange={this.updateInputValue}
+                  onClick={() => {
+                    if (this.state.boltTypeDropdown !== "Custom bolt") {
+                      this.setState({
+                        boltUltimateTensileStress:
+                          this.state.boltTypeDropdown === "Custom bolt"
+                            ? this.state.boltUltimateTensileStress
+                            : this.state.boltTypeDropdown === "Grade 4.6"
+                            ? 400
+                            : 800,
+                      });
+                    }
+                  }}
                 >
                   <option value="Custom bolt">Custom bolt</option>
                   <option value="Grade 4.6">Grade 4.6</option>
@@ -402,6 +610,9 @@ class BoltInput extends Component {
                       name="isPSFactorIS800"
                       checked={this.state.isPSFactorIS800}
                       onChange={this.updateCheckboxValue}
+                      onClick={() => {
+                        this.setState({ ymb: 1.25 });
+                      }}
                     />
                     Take according to IS800 table 5 (cl. 5.4.1)
                   </label>
@@ -456,11 +667,11 @@ class BoltInput extends Component {
                   onChange={this.updateInputValue}
                   disabled={this.state.typeOfSection === "Equal" ? true : false}
                 >
-                  <option value="Connected leg larger">
-                    Connected leg larger
+                  <option value="Larger leg as connected leg">
+                    Larger leg as connected leg
                   </option>
-                  <option value="Connected leg smaller">
-                    Connected leg smaller
+                  <option value="Larger leg as overhanging leg">
+                    Larger leg as overhanging leg
                   </option>
                 </select>
               </div>
