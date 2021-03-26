@@ -584,6 +584,15 @@ const unequalAngle = [
     cxx: 63.3,
     rmin: 31.9,
   },
+  {
+    Designation: "",
+    A: -143.69,
+    B: -143.69,
+    t: -143.69,
+    An: -143.69,
+    cxx: -143.69,
+    rmin: -143.69,
+  },
 ];
 
 export default unequalAngle;

@@ -569,6 +569,14 @@ const equalAngle = [
     cxx: 58.8,
     rmin: 38.8,
   },
+  {
+    Designation: "",
+    Size: -143.69,
+    t: -143.69,
+    An: -143.69,
+    cxx: -143.69,
+    rmin: -143.69,
+  },
 ];
 
 export default equalAngle;

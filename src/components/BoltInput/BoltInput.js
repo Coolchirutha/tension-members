@@ -57,6 +57,31 @@ class BoltInput extends Component {
   handleSubmit = (e) => {
     e.preventDefault();
 
+    var [
+      count,
+      tdn,
+      tdb,
+      tdb1,
+      tdb2,
+      tdg,
+      ab,
+      vdsb,
+      k1,
+      k2,
+      k3,
+      kb,
+      tdpb,
+      vdpb,
+      vd,
+      n,
+      alpha,
+      avg,
+      avn,
+      g,
+      atg,
+      atn,
+    ] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
     // Calculating dh value
     var dh = this.determineDH();
     if (dh === -143.69) return;
@@ -80,7 +105,6 @@ class BoltInput extends Component {
       parseFloat(this.state.yieldStress);
 
     var suitableMember = {};
-    var nextSuitableMember = {};
     var suitableMemberIndex = 0;
 
     if (this.state.typeOfSection === "Equal") {
@@ -88,45 +112,38 @@ class BoltInput extends Component {
         if (item.An - ag >= 0) {
           suitableMember = item;
           suitableMemberIndex = index;
-          nextSuitableMember = equalAngle[index + 1];
           break;
         }
       }
+      return -143.69;
     } else if (this.state.typeOfSection === "Unequal") {
       for (let [index, item] of unequalAngle.entries()) {
         if (item.An - ag >= 0) {
           suitableMember = item;
           suitableMemberIndex = index;
-          nextSuitableMember = equalAngle[index + 1];
           break;
         }
       }
+      return -143.69;
     }
-
-    var [
-      tdn,
-      tdb,
-      tdb1,
-      tdb2,
-      tdg,
-      ab,
-      vdsb,
-      k1,
-      k2,
-      k3,
-      kb,
-      tdpb,
-      vdpb,
-      vd,
-      n,
-      alpha,
-      avg,
-      avn,
-      g,
-      atg,
-      atn,
-    ] = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
     do {
+      if (count !== 0) {
+        suitableMemberIndex++;
+        if (this.state.typeOfSection === "Equal") {
+          try {
+            suitableMember = equalAngle[suitableMemberIndex];
+          } catch (error) {
+            return -143.69;
+          }
+        } else if (this.state.typeOfSection === "Unequal") {
+          try {
+            suitableMember = unequalAngle[suitableMemberIndex];
+          } catch (error) {
+            return -143.69;
+          }
+        }
+      }
+
       ab =
         ((this.props.location.state.id === 1
           ? 0.78
@@ -163,7 +180,7 @@ class BoltInput extends Component {
           parseFloat(this.state.boltDiameter) *
           parseFloat(this.state.steelUltimateTensileStress) *
           tdpb) /
-        parseFloat(this.state.ymb);
+        (parseFloat(this.state.ymb) * 1000);
 
       vd = Math.min(vdpb, vdsb);
       if (
@@ -186,7 +203,7 @@ class BoltInput extends Component {
       avn =
         (parseFloat(pitch) * (n - 1) +
           parseFloat(endDistance) -
-          (n + 0.5) * dh) *
+          (n - 0.5) * dh) *
         suitableMember.t;
 
       g = 0;
@@ -217,7 +234,7 @@ class BoltInput extends Component {
         (alpha *
           suitableMember.An *
           parseFloat(this.state.steelUltimateTensileStress)) /
-        (parseFloat(this.state.ym0) * 1000);
+        (parseFloat(this.state.ym1) * 1000);
 
       if (
         this.props.location.state.id === 3 ||
@@ -234,9 +251,8 @@ class BoltInput extends Component {
       tdb2 =
         (0.9 * avn * parseFloat(this.state.steelUltimateTensileStress)) /
           (parseFloat(this.state.ym1) * 1000 * Math.sqrt(3)) +
-        ((atg * parseFloat(this.state.yieldStress)) /
-          parseFloat(this.state.ym0)) *
-          1000;
+        (atg * parseFloat(this.state.yieldStress)) /
+          (parseFloat(this.state.ym0) * 1000);
 
       tdb = Math.min(tdb1, tdb2);
 
@@ -250,50 +266,12 @@ class BoltInput extends Component {
       parseFloat(this.state.allowableSlendernessRatio) <
         parseFloat(this.state.lengthOfTensionMember) / suitableMember.rmin
     );
-    console.log(
-      parseFloat(this.state.factoredLoad),
-      parseFloat(this.state.lengthOfTensionMember),
-      parseFloat(this.state.allowableSlendernessRatio),
-      parseFloat(this.state.gussetPlateThickness),
-      parseFloat(this.state.steelUltimateTensileStress),
-      parseFloat(this.state.yieldStress),
-      parseFloat(this.state.ym1),
-      parseFloat(this.state.ym0),
-      parseFloat(this.state.boltUltimateTensileStress),
-      parseFloat(this.state.boltDiameter),
-      parseFloat(pitch),
-      parseFloat(endDistance),
-      parseFloat(this.state.ymb)
+    window.alert(
+      "The suitable member for the input parameters is " +
+        suitableMember.Designation +
+        " and the number of bolts used are " +
+        n
     );
-    console.log(
-      tdn,
-      tdb,
-      tdb1,
-      tdb2,
-      tdg,
-      ab,
-      vdsb,
-      k1,
-      k2,
-      k3,
-      kb,
-      tdpb,
-      vdpb,
-      vd,
-      n,
-      alpha,
-      avg,
-      avn,
-      g,
-      ag,
-      atg,
-      atn
-    );
-    console.log(
-      parseFloat(this.state.lengthOfTensionMember) / suitableMember.rmin
-    );
-    console.log(suitableMember.An);
-    console.log(suitableMember.Designation);
   };
 
   updateInputValue = (e) => {
@@ -337,7 +315,7 @@ class BoltInput extends Component {
                 className={classnames(classes.formGroup, classes.rightAlign)}
               >
                 <label className={classes.inputLabel}>
-                  Length of tension member (in kN):
+                  Length of tension member (in mm):
                 </label>
                 <input
                   className={classes.textInput}
@@ -365,7 +343,7 @@ class BoltInput extends Component {
                 className={classnames(classes.formGroup, classes.rightAlign)}
               >
                 <label className={classes.inputLabel}>
-                  Thickness of gusset plate:
+                  Thickness of gusset plate (in mm):
                 </label>
                 <input
                   className={classes.textInput}
